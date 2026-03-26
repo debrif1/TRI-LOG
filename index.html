@@ -1033,19 +1033,11 @@ const App = {
     });
   },
   reset() {
-    if (!confirm('Reset sessioni completate di questa settimana?\n(Il piano importato rimarrà visibile)')) return;
+    if (!confirm('Reset completo della settimana?\n(Verranno cancellati sia le attività svolte che il piano importato)')) return;
     const wk = Nav.cur;
-    const d  = S.gw(wk);
-    // Resetta solo done/mins/rpe/note, mantiene planned e planDesc
-    for (let i = 0; i < 7; i++)
-      for (const sp of SPORTS) {
-        S.set(wk, i, sp.key, 'done', false);
-        S.set(wk, i, sp.key, 'mins', '');
-        S.set(wk, i, sp.key, 'rpe',  '');
-        S.set(wk, i, sp.key, 'note', '');
-      }
+    S.delWeek(wk);
     this.render();
-    this.toast('Completamenti resettati (piano mantenuto)');
+    this.toast('Settimana resettata completamente ✓');
   },
   toast(msg) {
     const t = document.getElementById('toast');
