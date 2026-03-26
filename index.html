@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#08080f"/>
+<title>TRI·LOG — Training Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg-0:#08080f;--bg-1:#0f0f18;--bg-2:#161622;--bg-3:#1e1e2e;--bg-4:#262638;
+  --glass:rgba(22,22,34,.55);--glass-border:rgba(255,255,255,.06);--glass-hover:rgba(255,255,255,.08);
+  --text-100:#f0f0f8;--text-80:#b8b8cc;--text-60:#8888a0;--text-40:#555570;--text-20:#333348;
+  --swim:#00d4ff;--swim-glow:rgba(0,212,255,.15);--swim-deep:rgba(0,212,255,.08);
+  --bike:#ff9500;--bike-glow:rgba(255,149,0,.15);--bike-deep:rgba(255,149,0,.08);
+  --run:#ff375f;--run-glow:rgba(255,55,95,.15);--run-deep:rgba(255,55,95,.08);
+  --gym:#30d158;--gym-glow:rgba(48,209,88,.15);--gym-deep:rgba(48,209,88,.08);
+  --accent:#6366f1;--accent-glow:rgba(99,102,241,.2);
+  --radius-sm:8px;--radius-md:14px;--radius-lg:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg-0)}
+body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,sans-serif;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;padding-bottom:80px}
+@supports(padding:max(0px)){body{padding-bottom:max(80px,calc(60px + env(safe-area-inset-bottom)))}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--text-20);border-radius:3px}
+
+/* Fonts */
+.f-display{font-family:'Inter',sans-serif;font-weight:800}.f-mono{font-family:'JetBrains Mono',monospace}.f-orb{font-family:'Orbitron',monospace}
+
+/* ─── HEADER ─── */
+.header{position:sticky;top:0;z-index:100;background:rgba(8,8,15,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px 16px}
+@supports(padding:max(0px)){.header{padding-top:max(12px,env(safe-area-inset-top))}}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.logo-mark{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;position:relative}
+.logo-mark::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:var(--accent-glow);filter:blur(8px);z-index:-1}
+.logo-text{font-family:'Inter',sans-serif;font-weight:900;font-size:15px;letter-spacing:2px;background:linear-gradient(135deg,#fff,#a5b4fc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Week selector */
+.week-sel{flex:1;max-width:280px;position:relative}
+.week-sel select{width:100%;appearance:none;-webkit-appearance:none;background:var(--bg-3);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--text-100);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;padding:10px 32px 10px 14px;cursor:pointer;transition:all .2s}
+.week-sel select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.week-sel::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-40);font-size:10px;pointer-events:none}
+.week-sel select option{background:var(--bg-3);color:var(--text-100)}
+
+/* Header actions */
+.h-actions{display:flex;gap:6px;margin-left:auto}
+.h-btn{background:var(--bg-3);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--text-60);font-size:16px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.h-btn:hover{background:var(--bg-4);color:var(--text-100);border-color:var(--accent)}
+.h-btn:active{transform:scale(.93)}
+
+/* Desktop nav in header */
+.desk-nav{display:none;gap:4px;margin-left:8px}
+@media(min-width:768px){.desk-nav{display:flex}}
+.desk-nav button{background:none;border:none;color:var(--text-40);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;position:relative}
+.desk-nav button:hover{color:var(--text-80);background:var(--glass-hover)}
+.desk-nav button.active{color:var(--text-100);background:var(--accent-glow)}
+.desk-nav button.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent);border-radius:1px}
+
+/* ─── BOTTOM NAV (mobile) ─── */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(8,8,15,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--glass-border);display:flex;justify-content:space-around;padding:6px 0}
+@supports(padding:max(0px)){.bot-nav{padding-bottom:max(6px,env(safe-area-inset-bottom))}}
+@media(min-width:768px){.bot-nav{display:none}}
+.bot-nav button{background:none;border:none;color:var(--text-40);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 16px;cursor:pointer;transition:color .2s;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.bot-nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}
+.bot-nav button.active{color:var(--accent)}
+.bot-nav button.active svg{stroke:var(--accent)}
+
+/* ─── MAIN ─── */
+.main{max-width:1200px;margin:0 auto;padding:20px 16px 40px}
+
+/* Section headers */
+.sec-head{margin-bottom:20px}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.sec-title{font-family:'Inter',sans-serif;font-size:24px;font-weight:800;color:var(--text-100);line-height:1.2}
+.sec-sub{font-size:14px;color:var(--text-60);margin-top:4px;font-weight:400}
+
+/* ─── GLASS CARD ─── */
+.g-card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:var(--radius-md);overflow:hidden;transition:border-color .25s,transform .2s,box-shadow .25s}
+.g-card:hover{border-color:rgba(255,255,255,.1)}
+.g-card.glow-swim:hover{box-shadow:0 0 30px var(--swim-deep)}
+.g-card.glow-bike:hover{box-shadow:0 0 30px var(--bike-deep)}
+.g-card.glow-run:hover{box-shadow:0 0 30px var(--run-deep)}
+.g-card.glow-gym:hover{box-shadow:0 0 30px var(--gym-deep)}
+
+/* ─── DAY CARDS ─── */
+.week-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:640px){.week-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.week-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1280px){.week-grid{grid-template-columns:repeat(7,1fr)}}
+
+.day-card{position:relative}
+.day-card.is-today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-glow),0 4px 30px rgba(99,102,241,.1)}
+.day-card.is-today .day-head{background:var(--accent-glow)}
+
+.day-head{padding:12px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--glass-border)}
+.day-head .d-name{font-weight:700;font-size:13px;letter-spacing:.5px;color:var(--text-80);text-transform:uppercase}
+.day-head .d-date{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-40)}
+.today-pill{background:var(--accent);color:#fff;font-size:9px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:10px}
+
+/* Progress */
+.day-prog{height:2px;background:var(--bg-2)}
+.day-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--swim));transition:width .4s ease;border-radius:1px}
+
+/* Sport rows */
+.s-row{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.03);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;transition:background .15s;position:relative}
+.s-row:last-child{border-bottom:none}
+.s-row::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:0 2px 2px 0;opacity:.15;transition:opacity .2s}
+.s-row[data-s="swim"]::before{background:var(--swim)}.s-row[data-s="bike"]::before{background:var(--bike)}
+.s-row[data-s="run"]::before{background:var(--run)}.s-row[data-s="gym"]::before{background:var(--gym)}
+.s-row.done::before{opacity:1}
+.s-row.done{background:rgba(255,255,255,.02)}
+.s-row .s-icon{width:20px;height:20px;flex-shrink:0;opacity:.5;transition:opacity .2s}
+.s-row.done .s-icon{opacity:1}
+.s-row .s-name{font-size:13px;font-weight:600;color:var(--text-40);transition:color .2s}
+.s-row.done[data-s="swim"] .s-name{color:var(--swim)}.s-row.done[data-s="bike"] .s-name{color:var(--bike)}
+.s-row.done[data-s="run"] .s-name{color:var(--run)}.s-row.done[data-s="gym"] .s-name{color:var(--gym)}
+
+/* Checkbox */
+.chk-wrap{display:flex;align-items:center;gap:5px}
+.s-chk{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:1.5px solid var(--text-20);border-radius:6px;background:transparent;cursor:pointer;transition:all .2s;position:relative;flex-shrink:0}
+.s-chk:checked{border-color:currentColor;background:currentColor}
+.s-chk:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:700;color:var(--bg-0)}
+.s-chk.c-swim{color:var(--swim)}.s-chk.c-bike{color:var(--bike)}.s-chk.c-run{color:var(--run)}.s-chk.c-gym{color:var(--gym)}
+
+/* Inline data inputs */
+.s-inputs{grid-column:1/-1;display:flex;gap:8px;align-items:center;padding-top:6px;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease,opacity .2s ease}
+.s-inputs.vis{max-height:60px;opacity:1}
+.inp-wrap label{display:block;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-40);margin-bottom:2px}
+.data-inp{background:var(--bg-2);border:1px solid var(--glass-border);border-radius:6px;color:var(--text-100);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding:8px 10px;width:68px;transition:border-color .2s}
+.data-inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.data-inp::placeholder{color:var(--text-20)}
+
+/* RPE / MIN badges */
+.rpe-tag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:2px 6px;border-radius:6px;border:1px solid}
+.rpe-lo{color:var(--gym);border-color:rgba(48,209,88,.25);background:var(--gym-deep)}
+.rpe-md{color:var(--bike);border-color:rgba(255,149,0,.25);background:var(--bike-deep)}
+.rpe-hi{color:var(--run);border-color:rgba(255,55,95,.25);background:var(--run-deep)}
+.min-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-40)}
+
+/* ─── STAT CARDS ─── */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:640px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-card{padding:18px}
+.stat-card .sv{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;line-height:1}
+.stat-card .sl{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-40);margin-top:6px}
+
+/* Sport stat cards */
+.sport-stat{padding:16px}
+.sport-stat .sport-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sport-stat .sport-head .sp-name{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.sport-stat .sport-head .sp-pct{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
+.bar-track{height:5px;background:var(--bg-2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.25,.8,.25,1)}
+.sport-stat .sport-meta{display:flex;justify-content:space-between;margin-top:8px}
+.sport-stat .sport-meta span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-40)}
+
+/* Sport card top gradient line */
+.sport-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--radius-md) var(--radius-md) 0 0}
+.sport-stat.t-swim::before{background:linear-gradient(90deg,var(--swim),transparent 80%)}
+.sport-stat.t-bike::before{background:linear-gradient(90deg,var(--bike),transparent 80%)}
+.sport-stat.t-run::before{background:linear-gradient(90deg,var(--run),transparent 80%)}
+.sport-stat.t-gym::before{background:linear-gradient(90deg,var(--gym),transparent 80%)}
+
+/* Donut */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:24px;padding:24px}
+@media(min-width:640px){.donut-wrap{flex-direction:row}}
+.donut-legend{flex:1;width:100%;display:flex;flex-direction:column;gap:12px}
+.leg-row{display:flex;align-items:center;gap:10px}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.leg-name{font-size:14px;color:var(--text-60);font-weight:500}
+.leg-val{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500}
+
+/* ─── MONTH VIEW ─── */
+.rpe-chart{display:flex;align-items:flex-end;gap:4px;height:80px;padding-top:8px}
+.rpe-col{flex:1;min-width:20px;border-radius:4px 4px 0 0;transition:height .4s ease;display:flex;align-items:flex-start;justify-content:center;padding-top:4px}
+.rpe-col span{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:var(--text-100)}
+.rpe-labels{display:flex;gap:4px;margin-top:6px}
+.rpe-labels span{flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-20)}
+
+/* ─── IMPORT MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-lg);max-width:480px;width:100%;padding:28px;position:relative}
+.modal h2{font-size:20px;font-weight:800;margin-bottom:4px}.modal p{font-size:13px;color:var(--text-60);margin-bottom:20px}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-40);font-size:20px;cursor:pointer;padding:4px}
+.drop-zone{border:2px dashed var(--text-20);border-radius:var(--radius-md);padding:32px;text-align:center;cursor:pointer;transition:all .2s}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);background:var(--accent-glow)}
+.drop-zone input{display:none}
+.drop-zone .dz-icon{font-size:32px;margin-bottom:8px}
+.drop-zone .dz-text{font-size:13px;color:var(--text-60)}
+.drop-zone .dz-hint{font-size:11px;color:var(--text-20);margin-top:4px}
+.modal-btns{display:flex;gap:10px;margin-top:20px}
+.btn{padding:10px 20px;border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#818cf8}
+.btn-outline{background:transparent;border:1px solid var(--glass-border);color:var(--text-60)}.btn-outline:hover{border-color:var(--text-40);color:var(--text-100)}
+.btn:active{transform:scale(.96)}
+
+/* Toolbar row */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.toolbar .btn{padding:8px 14px;font-size:12px;display:flex;align-items:center;gap:6px}
+
+/* ─── VIEWS ─── */
+.view{display:none}.view.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .35s ease forwards}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(30px);background:var(--bg-3);border:1px solid var(--accent);border-radius:var(--radius-md);padding:10px 20px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--text-100);box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:200;opacity:0;transition:all .3s ease;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.toast{bottom:30px}}
+
+/* Today pulse */
+@keyframes pulse-accent{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.3)}50%{box-shadow:0 0 0 6px rgba(99,102,241,0)}}
+.is-today .day-head{animation:pulse-accent 3s infinite}
+
+/* Grid helpers */
+.sport-cards-grid{display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:768px){.sport-cards-grid{grid-template-columns:repeat(4,1fr)}}
+.month-bars{display:flex;flex-direction:column;gap:12px}
+
+/* Mobile touch */
+@media(max-width:640px){
+  .sec-title{font-size:20px}
+  .stat-card .sv{font-size:22px}
+  .s-chk{width:26px;height:26px}
+  .s-chk:checked::after{font-size:15px}
+  .data-inp{padding:10px;width:72px;font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark"><span class="f-orb" style="font-size:9px;font-weight:900;color:var(--accent)">TRI</span></div>
+      <span class="logo-text">TRI·LOG</span>
+    </div>
+    <div class="week-sel"><select id="weekSel"></select></div>
+    <nav class="desk-nav">
+      <button class="active" data-v="dashboard">Piano</button>
+      <button data-v="stats">Stats</button>
+      <button data-v="month">Mese</button>
+    </nav>
+    <div class="h-actions">
+      <button class="h-btn" id="btnImport" title="Importa Excel">📥</button>
+      <button class="h-btn" id="btnExport" title="Esporta Excel">📤</button>
+      <button class="h-btn" id="btnReset" title="Reset settimana">↺</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ BOTTOM NAV ═══ -->
+<nav class="bot-nav">
+  <button class="active" data-v="dashboard">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Piano
+  </button>
+  <button data-v="stats">
+    <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+    Stats
+  </button>
+  <button data-v="month">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Mese
+  </button>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+  <!-- DASHBOARD -->
+  <div id="v-dashboard" class="view active fade-in">
+    <div class="sec-head">
+      <div class="sec-label">Piano Settimanale</div>
+      <div class="sec-title">Il tuo allenamento.</div>
+      <div class="sec-sub">Segna le sessioni e monitora i progressi.</div>
+    </div>
+    <div class="week-grid" id="weekGrid"></div>
+  </div>
+
+  <!-- STATS -->
+  <div id="v-stats" class="view fade-in">
+    <div class="sec-head">
+      <div class="sec-label">Statistiche</div>
+      <div class="sec-title">Riepilogo settimanale.</div>
+    </div>
+    <div class="stat-grid" id="statCards" style="margin-bottom:24px"></div>
+    <div class="sec-head" style="margin-top:8px"><div class="sec-label">Distribuzione per Sport</div></div>
+    <div class="sport-cards-grid" id="sportCards" style="margin-bottom:24px"></div>
+    <div class="sec-head" style="margin-top:8px"><div class="sec-label">Ripartizione Visiva</div></div>
+    <div class="g-card donut-wrap" id="donutWrap"></div>
+  </div>
+
+  <!-- MONTH -->
+  <div id="v-month" class="view fade-in">
+    <div class="sec-head">
+      <div class="sec-label" id="mLabel">Dashboard Mensile</div>
+      <div class="sec-title" id="mTitle">—</div>
+    </div>
+    <div class="stat-grid" id="mStatCards" style="margin-bottom:24px"></div>
+    <div class="sec-head" style="margin-top:8px"><div class="sec-label">Volume per Sport</div></div>
+    <div class="month-bars" id="mSportBars" style="margin-bottom:24px"></div>
+    <div class="sec-head" style="margin-top:8px"><div class="sec-label">Andamento RPE</div></div>
+    <div class="g-card" style="padding:20px">
+      <div class="rpe-chart" id="rpeChart"></div>
+      <div class="rpe-labels" id="rpeLabels"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══ IMPORT MODAL ═══ -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2>Importa Allenamenti</h2>
+    <p>Carica un file Excel (.xlsx) o CSV con le colonne: Settimana, Giorno, Sport, Minuti, RPE</p>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📁</div>
+      <div class="dz-text">Trascina qui il file o tocca per selezionare</div>
+      <div class="dz-hint">.xlsx oppure .csv</div>
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv"/>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-outline" id="dlTemplate">📋 Scarica Template</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+// TRI·LOG v4 — Premium Edition
+// ═══════════════════════════════
+
+const DAYS_IT=['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+const DAYS_MAP={'lun':0,'mar':1,'mer':2,'gio':3,'ven':4,'sab':5,'dom':6,'lunedì':0,'martedì':1,'mercoledì':2,'giovedì':3,'venerdì':4,'sabato':5,'domenica':6};
+const MONTHS_IT=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const SPORTS=[
+  {key:'swim',label:'Nuoto',cls:'c-swim',hex:'#00d4ff',cssVar:'var(--swim)',
+   svg:'<svg class="s-icon" viewBox="0 0 22 22" fill="none"><path d="M2 14c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0M7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM9 8l5 3" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/></svg>'},
+  {key:'bike',label:'Bici',cls:'c-bike',hex:'#ff9500',cssVar:'var(--bike)',
+   svg:'<svg class="s-icon" viewBox="0 0 22 22" fill="none"><circle cx="5" cy="15" r="3" stroke="#ff9500" stroke-width="1.5"/><circle cx="17" cy="15" r="3" stroke="#ff9500" stroke-width="1.5"/><path d="M5 15l4-8h4l2 8M9 7l3 4" stroke="#ff9500" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="6" r="1.5" fill="#ff9500"/></svg>'},
+  {key:'run',label:'Corsa',cls:'c-run',hex:'#ff375f',cssVar:'var(--run)',
+   svg:'<svg class="s-icon" viewBox="0 0 22 22" fill="none"><circle cx="13" cy="4" r="1.5" fill="#ff375f"/><path d="M9 7l2-2 3 2-2 4-3 2M7 20l4-5 3 2 2-4M6 12l4 2" stroke="#ff375f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+  {key:'gym',label:'Forza',cls:'c-gym',hex:'#30d158',cssVar:'var(--gym)',
+   svg:'<svg class="s-icon" viewBox="0 0 22 22" fill="none"><rect x="1" y="10" width="3" height="4" rx="1" fill="#30d158"/><rect x="18" y="10" width="3" height="4" rx="1" fill="#30d158"/><rect x="4" y="8" width="3" height="8" rx="1" fill="#30d158"/><rect x="15" y="8" width="3" height="8" rx="1" fill="#30d158"/><rect x="7" y="11" width="8" height="2" rx="1" fill="#30d158"/></svg>'}
+];
+const SPORT_MAP={'nuoto':'swim','bici':'bike','corsa':'run','forza':'gym','swim':'swim','bike':'bike','run':'run','gym':'gym'};
+const SK='trilog_v4';
+const END=new Date(2026,9,30);
+
+// ── DateUtils ──
+const D={
+  mon(d){const t=new Date(d);const w=t.getDay();t.setDate(t.getDate()-w+(w===0?-6:1));t.setHours(0,0,0,0);return t},
+  wn(d){const u=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=u.getUTCDay()||7;u.setUTCDate(u.getUTCDate()+4-n);const y=new Date(Date.UTC(u.getUTCFullYear(),0,1));return Math.ceil((((u-y)/864e5)+1)/7)},
+  wk(d){const m=this.mon(d);return`${m.getFullYear()}-W${String(this.wn(m)).padStart(2,'0')}`},
+  today(){return this.wk(new Date())},
+  sun(m){const s=new Date(m);s.setDate(s.getDate()+6);return s},
+  fmt(d){return`${d.getDate()}/${d.getMonth()+1}`},
+  allWeeks(){const w=[];let c=new Date(this.mon(new Date()));const e=this.mon(END);while(c<=e){const m=new Date(c);w.push({key:this.wk(m),mon:m,sun:this.sun(m),lbl:`W${this.wn(m)} · ${this.fmt(m)} – ${this.fmt(this.sun(m))}`});c.setDate(c.getDate()+7)}return w},
+  monthWeeks(y,m){return this.allWeeks().filter(w=>(w.mon.getFullYear()===y&&w.mon.getMonth()===m)||(w.sun.getFullYear()===y&&w.sun.getMonth()===m))},
+  td(){const t=new Date();t.setHours(0,0,0,0);return t}
+};
+
+// ── Store ──
+const S={
+  _d:null,
+  load(){try{const r=localStorage.getItem(SK);this._d=r?JSON.parse(r):{}}catch(e){this._d={}}},
+  save(){localStorage.setItem(SK,JSON.stringify(this._d))},
+  gw(wk){if(!this._d[wk])this._d[wk]={};for(let i=0;i<7;i++){if(!this._d[wk][i])this._d[wk][i]={};for(const sp of SPORTS)if(!this._d[wk][i][sp.key])this._d[wk][i][sp.key]={done:false,mins:'',rpe:''}}return this._d[wk]},
+  set(wk,d,sp,f,v){this.gw(wk);this._d[wk][d][sp][f]=v;this.save()},
+  del(wk){delete this._d[wk];this.save()},
+  all(){return this._d}
+};
+
+// ── Nav ──
+const Nav={
+  cur:null,weeks:[],
+  init(){this.weeks=D.allWeeks();this.cur=D.today();const s=document.getElementById('weekSel');
+    s.innerHTML=this.weeks.map(w=>`<option value="${w.key}"${w.key===this.cur?' selected':''}>${w.lbl}</option>`).join('');
+    s.onchange=e=>{this.cur=e.target.value;App.render()}},
+  getMon(){const w=this.weeks.find(x=>x.key===this.cur);return w?w.mon:D.mon(new Date())},
+  getMonth(){const m=this.getMon();return{y:m.getFullYear(),m:m.getMonth()}}
+};
+
+// ── Stats ──
+const St={
+  weekly(wk){const d=S.gw(wk);const t={swim:0,bike:0,run:0,gym:0},ss={swim:0,bike:0,run:0,gym:0};let rs=0,rc=0,ts=0;
+    for(let i=0;i<7;i++)for(const sp of SPORTS){const x=d[i][sp.key];if(x.done){ts++;t[sp.key]+=(parseInt(x.mins)||0);ss[sp.key]++;if(x.rpe){rs+=parseInt(x.rpe);rc++}}}
+    return{t,ss,tm:t.swim+t.bike+t.run+t.gym,ts,tp:28,ra:rc?(rs/rc).toFixed(1):null}},
+  monthly(y,m){const ws=D.monthWeeks(y,m);const t={swim:0,bike:0,run:0,gym:0};let rs=0,rc=0,ts=0;const wr=[];
+    for(const w of ws){const d=S.gw(w.key);let wR=0,wC=0;
+      for(let i=0;i<7;i++)for(const sp of SPORTS){const x=d[i][sp.key];if(x.done){ts++;t[sp.key]+=(parseInt(x.mins)||0);if(x.rpe){const r=parseInt(x.rpe);rs+=r;rc++;wR+=r;wC++}}}
+      wr.push({key:w.key,lbl:'W'+D.wn(w.mon),avg:wC?(wR/wC).toFixed(1):0})}
+    return{t,tm:t.swim+t.bike+t.run+t.gym,ts,ra:rc?(rs/rc).toFixed(1):null,wr,wc:ws.length}}
+};
+
+// ── Renderer ──
+const R={
+  week(){const g=document.getElementById('weekGrid');g.innerHTML='';const wk=Nav.cur;const d=S.gw(wk);const mon=Nav.getMon();const td=D.td();const isCur=wk===D.today();
+    for(let i=0;i<7;i++){const dd=new Date(mon);dd.setDate(mon.getDate()+i);const isT=isCur&&dd.getTime()===td.getTime();
+      const dn=SPORTS.filter(sp=>d[i][sp.key].done).length;const pct=Math.round((dn/4)*100);
+      const c=document.createElement('div');c.className=`g-card day-card${isT?' is-today':''}`;c.id=`dc-${i}`;
+      c.innerHTML=`<div class="day-head"><span class="d-name">${DAYS_IT[i]}</span>${isT?'<span class="today-pill">OGGI</span>':''}<span class="d-date">${dd.getDate()}/${dd.getMonth()+1}</span></div><div class="day-prog"><div class="day-prog-fill" style="width:${pct}%"></div></div>`+
+        SPORTS.map(sp=>{const x=d[i][sp.key];const rc=x.rpe>=8?'rpe-hi':x.rpe>=5?'rpe-md':x.rpe>0?'rpe-lo':'';
+          return`<div class="s-row${x.done?' done':''}" data-s="${sp.key}" id="sr-${i}-${sp.key}">${sp.svg}<span class="s-name">${sp.label}</span><div class="chk-wrap">${x.done&&x.rpe?`<span class="rpe-tag ${rc}">${x.rpe}</span>`:''}${x.done&&x.mins?`<span class="min-tag">${x.mins}'</span>`:''}<input type="checkbox" class="s-chk ${sp.cls}" ${x.done?'checked':''} data-d="${i}" data-s="${sp.key}"/></div><div class="s-inputs${x.done?' vis':''}" id="si-${i}-${sp.key}"><div class="inp-wrap"><label>Min</label><input type="number" inputmode="numeric" min="1" max="600" class="data-inp" value="${x.mins||''}" placeholder="45" data-d="${i}" data-s="${sp.key}" data-f="mins"/></div><div class="inp-wrap"><label>RPE</label><input type="number" inputmode="numeric" min="1" max="10" class="data-inp" value="${x.rpe||''}" placeholder="7" data-d="${i}" data-s="${sp.key}" data-f="rpe"/></div></div></div>`}).join('');
+      g.appendChild(c)}
+    g.onclick=e=>{const ch=e.target.closest('.s-chk');if(ch)this.toggle(ch)};
+    g.onchange=e=>{const inp=e.target.closest('.data-inp');if(inp)this.input(inp)}},
+
+  toggle(ch){const i=+ch.dataset.d,sp=ch.dataset.s,on=ch.checked;const wk=Nav.cur;
+    S.set(wk,i,sp,'done',on);if(!on){S.set(wk,i,sp,'mins','');S.set(wk,i,sp,'rpe','');}
+    this.week();this.stats();if(on)App.toast('Sessione registrata ✓')},
+
+  input(inp){const i=+inp.dataset.d,sp=inp.dataset.s,f=inp.dataset.f;const v=parseInt(inp.value,10);
+    if(f==='rpe'&&inp.value&&(v<1||v>10)){App.toast('RPE: valore 1–10');inp.value='';return}
+    S.set(Nav.cur,i,sp,f,inp.value?v:'');this.week();this.stats()},
+
+  initStatCards(){
+    document.getElementById('statCards').innerHTML=
+      `<div class="g-card stat-card"><div class="sv" id="sHrs" style="color:var(--accent)">0h 0m</div><div class="sl">Volume Totale</div></div>`+
+      `<div class="g-card stat-card"><div class="sv f-mono" id="sSess" style="font-size:28px">0</div><div class="sl">Sessioni</div></div>`+
+      `<div class="g-card stat-card"><div class="sv f-mono" id="sRPE" style="font-size:28px">—</div><div class="sl">RPE Medio</div></div>`+
+      `<div class="g-card stat-card"><div class="sv f-mono" id="sPct" style="font-size:28px">0%</div><div class="sl">Completamento</div></div>`;
+    document.getElementById('sportCards').innerHTML=SPORTS.map(sp=>
+      `<div class="g-card sport-stat t-${sp.key}" style="position:relative"><div class="sport-head">${sp.svg}<span class="sp-name" style="color:${sp.cssVar}">${sp.label.toUpperCase()}</span><span class="sp-pct" style="color:${sp.cssVar}" id="p-${sp.key}">0%</span></div><div class="bar-track"><div class="bar-fill" id="b-${sp.key}" style="background:${sp.cssVar};width:0%"></div></div><div class="sport-meta"><span id="t-${sp.key}">0 min</span><span id="s-${sp.key}">0 sess.</span></div></div>`).join('');
+    // Donut
+    document.getElementById('donutWrap').innerHTML=
+      `<svg width="160" height="160" viewBox="0 0 160 160" style="flex-shrink:0"><circle cx="80" cy="80" r="60" fill="none" stroke="var(--bg-2)" stroke-width="26"/>`+
+      SPORTS.map(sp=>`<circle id="dn-${sp.key}" cx="80" cy="80" r="60" fill="none" stroke="${sp.hex}" stroke-width="26" stroke-dasharray="0 377" stroke-dashoffset="94" style="transition:stroke-dasharray .8s ease;transform-origin:center;transform:rotate(-90deg)"/>`).join('')+
+      `<text x="80" y="76" text-anchor="middle" fill="var(--text-100)" font-family="Orbitron" font-size="18" font-weight="900" id="dnC">—</text><text x="80" y="92" text-anchor="middle" fill="var(--text-40)" font-family="Orbitron" font-size="7" letter-spacing="2">MIN</text></svg>`+
+      `<div class="donut-legend">`+SPORTS.map(sp=>`<div class="leg-row"><span class="leg-dot" style="background:${sp.cssVar}"></span><span class="leg-name">${sp.label}</span><span class="leg-val" style="color:${sp.cssVar}" id="lg-${sp.key}">0 min / 0%</span></div>`).join('')+`</div>`},
+
+  stats(){const s=St.weekly(Nav.cur);const h=Math.floor(s.tm/60),m=s.tm%60;
+    document.getElementById('sHrs').textContent=`${h}h ${m}m`;
+    document.getElementById('sSess').textContent=s.ts;
+    document.getElementById('sRPE').textContent=s.ra||'—';
+    document.getElementById('sPct').textContent=Math.round((s.ts/s.tp)*100)+'%';
+    for(const sp of SPORTS){const k=sp.key;const p=s.tm>0?Math.round((s.t[k]/s.tm)*100):0;
+      const pe=document.getElementById(`p-${k}`);if(pe)pe.textContent=p+'%';
+      const be=document.getElementById(`b-${k}`);if(be)be.style.width=p+'%';
+      const te=document.getElementById(`t-${k}`);if(te)te.textContent=s.t[k]+' min';
+      const se=document.getElementById(`s-${k}`);if(se)se.textContent=s.ss[k]+' sess.';
+      const le=document.getElementById(`lg-${k}`);if(le)le.textContent=`${s.t[k]} min / ${p}%`}
+    const C=2*Math.PI*60;let off=0;
+    for(const sp of SPORTS){const arc=s.tm>0?(s.t[sp.key]/s.tm)*C:0;const el=document.getElementById(`dn-${sp.key}`);
+      if(el){el.style.strokeDasharray=`${arc} ${C-arc}`;el.setAttribute('stroke-dashoffset',C*0.25-off);off+=arc}}
+    document.getElementById('dnC').textContent=s.tm||'—'},
+
+  month(){const{y,m}=Nav.getMonth();
+    document.getElementById('mLabel').textContent='Dashboard Mensile';
+    document.getElementById('mTitle').textContent=`${MONTHS_IT[m]} ${y}`;
+    const ms=St.monthly(y,m);const h=Math.floor(ms.tm/60),mn=ms.tm%60;
+    document.getElementById('mStatCards').innerHTML=
+      `<div class="g-card stat-card"><div class="sv" style="color:var(--accent)">${h}h ${mn}m</div><div class="sl">Volume</div></div>`+
+      `<div class="g-card stat-card"><div class="sv f-mono" style="font-size:28px">${ms.ts}</div><div class="sl">Sessioni</div></div>`+
+      `<div class="g-card stat-card"><div class="sv f-mono" style="font-size:28px">${ms.ra||'—'}</div><div class="sl">RPE Medio</div></div>`+
+      `<div class="g-card stat-card"><div class="sv f-mono" style="font-size:28px">${ms.wc}</div><div class="sl">Settimane</div></div>`;
+    const mx=Math.max(1,...SPORTS.map(sp=>ms.t[sp.key]));
+    document.getElementById('mSportBars').innerHTML=SPORTS.map(sp=>{const mins=ms.t[sp.key];const p=Math.round((mins/mx)*100);
+      return`<div class="g-card sport-stat t-${sp.key}" style="position:relative;padding:14px 16px"><div class="sport-head">${sp.svg}<span class="sp-name" style="color:${sp.cssVar}">${sp.label.toUpperCase()}</span><span class="sp-pct" style="color:${sp.cssVar}">${mins} min</span></div><div class="bar-track" style="height:6px"><div class="bar-fill" style="background:${sp.cssVar};width:${p}%"></div></div></div>`}).join('');
+    const ch=document.getElementById('rpeChart'),lb=document.getElementById('rpeLabels');
+    if(!ms.wr.length){ch.innerHTML='<span class="f-mono" style="font-size:11px;color:var(--text-20)">Nessun dato</span>';lb.innerHTML='';return}
+    ch.innerHTML=ms.wr.map(w=>{const a=parseFloat(w.avg)||0;const hp=Math.max(Math.round((a/10)*100),5);
+      const col=a>=8?'var(--run)':a>=5?'var(--bike)':'var(--gym)';
+      return`<div class="rpe-col" style="height:${hp}%;background:${col}"><span>${a||''}</span></div>`}).join('');
+    lb.innerHTML=ms.wr.map(w=>`<span>${w.lbl}</span>`).join('')}
+};
+
+// ── Import/Export ──
+const IO={
+  openModal(){document.getElementById('importModal').classList.add('open')},
+  closeModal(){document.getElementById('importModal').classList.remove('open')},
+  init(){
+    document.getElementById('btnImport').onclick=()=>this.openModal();
+    document.getElementById('modalClose').onclick=()=>this.closeModal();
+    document.getElementById('importModal').onclick=e=>{if(e.target===e.currentTarget)this.closeModal()};
+    const dz=document.getElementById('dropZone'),fi=document.getElementById('fileInput');
+    dz.onclick=()=>fi.click();
+    dz.ondragover=e=>{e.preventDefault();dz.classList.add('dragover')};
+    dz.ondragleave=()=>dz.classList.remove('dragover');
+    dz.ondrop=e=>{e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files.length)this.parse(e.dataTransfer.files[0])};
+    fi.onchange=e=>{if(e.target.files.length)this.parse(e.target.files[0])};
+    document.getElementById('dlTemplate').onclick=()=>this.downloadTemplate();
+    document.getElementById('btnExport').onclick=()=>this.exportData();
+  },
+  parse(file){
+    const reader=new FileReader();
+    reader.onload=e=>{
+      try{
+        const data=new Uint8Array(e.target.result);
+        const wb=XLSX.read(data,{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const rows=XLSX.utils.sheet_to_json(ws);
+        let count=0;
+        for(const r of rows){
+          const wk=r['Settimana']||r['settimana']||r['Week'];
+          const dayStr=(r['Giorno']||r['giorno']||r['Day']||'').toLowerCase().trim();
+          const sportStr=(r['Sport']||r['sport']||'').toLowerCase().trim();
+          const mins=parseInt(r['Minuti']||r['minuti']||r['Minutes']||0);
+          const rpe=parseInt(r['RPE']||r['rpe']||0);
+          const dayIdx=DAYS_MAP[dayStr];
+          const sportKey=SPORT_MAP[sportStr];
+          if(wk!==undefined&&dayIdx!==undefined&&sportKey){
+            S.set(wk,dayIdx,sportKey,'done',true);
+            if(mins)S.set(wk,dayIdx,sportKey,'mins',mins);
+            if(rpe>=1&&rpe<=10)S.set(wk,dayIdx,sportKey,'rpe',rpe);
+            count++}}
+        this.closeModal();App.render();
+        App.toast(`${count} sessioni importate ✓`);
+      }catch(err){App.toast('Errore nel file: '+err.message)}};
+    reader.readAsArrayBuffer(file)},
+  downloadTemplate(){
+    const headers=[['Settimana','Giorno','Sport','Minuti','RPE']];
+    const example=[[Nav.cur,'Lun','Nuoto',45,7],[Nav.cur,'Lun','Corsa',30,6],[Nav.cur,'Mar','Bici',60,5],[Nav.cur,'Mer','Forza',40,7]];
+    const ws=XLSX.utils.aoa_to_sheet([...headers,...example]);
+    ws['!cols']=[{wch:12},{wch:12},{wch:10},{wch:8},{wch:6}];
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Allenamenti');
+    XLSX.writeFile(wb,'trilog_template.xlsx')},
+  exportData(){
+    const rows=[['Settimana','Giorno','Sport','Minuti','RPE']];
+    const all=S.all();
+    for(const wk in all)for(let i=0;i<7;i++)for(const sp of SPORTS){const x=all[wk]?.[i]?.[sp.key];
+      if(x&&x.done)rows.push([wk,DAYS_IT[i],sp.label,x.mins||'',x.rpe||''])}
+    if(rows.length===1){App.toast('Nessun dato da esportare');return}
+    const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:12},{wch:10},{wch:8},{wch:6}];
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Allenamenti');
+    XLSX.writeFile(wb,'trilog_export.xlsx');App.toast('Export completato ✓')}
+};
+
+// ── App ──
+const App={
+  _tt:null,
+  init(){S.load();Nav.init();R.initStatCards();IO.init();this.render();this.bindNav();
+    document.getElementById('btnReset').onclick=()=>this.reset()},
+  render(){R.week();R.stats();R.month()},
+  bindNav(){
+    const all=[...document.querySelectorAll('.desk-nav button'),...document.querySelectorAll('.bot-nav button')];
+    all.forEach(b=>{b.onclick=()=>{const v=b.dataset.v;
+      document.querySelectorAll('.desk-nav button,.bot-nav button').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll(`[data-v="${v}"]`).forEach(x=>x.classList.add('active'));
+      document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+      const el=document.getElementById(`v-${v}`);el.classList.remove('fade-in');void el.offsetWidth;el.classList.add('active','fade-in');
+      if(v==='stats')R.stats();if(v==='month')R.month()}})},
+  reset(){if(!confirm('Reset tutti i dati di questa settimana?'))return;S.del(Nav.cur);this.render();this.toast('Settimana resettata')},
+  toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+    clearTimeout(this._tt);this._tt=setTimeout(()=>t.classList.remove('show'),2500)}
+};
+
+App.init();
+</script>
+</body>
+</html>
