@@ -131,12 +131,17 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .s-chk.c-swim{color:var(--swim)}.s-chk.c-bike{color:var(--bike)}.s-chk.c-run{color:var(--run)}.s-chk.c-gym{color:var(--gym)}
 
 /* Inline data inputs */
-.s-inputs{grid-column:1/-1;display:flex;gap:8px;align-items:center;padding-top:6px;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease,opacity .2s ease}
-.s-inputs.vis{max-height:60px;opacity:1}
+.s-inputs{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;padding-top:6px;max-height:0;opacity:0;overflow:hidden;transition:max-height .3s ease,opacity .2s ease}
+.s-inputs.vis{max-height:200px;opacity:1}
 .inp-wrap label{display:block;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-40);margin-bottom:2px}
 .data-inp{background:var(--bg-2);border:1px solid var(--glass-border);border-radius:6px;color:var(--text-100);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding:8px 10px;width:68px;transition:border-color .2s}
 .data-inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .data-inp::placeholder{color:var(--text-20)}
+.note-wrap{width:100%}
+.note-inp{background:var(--bg-2);border:1px solid var(--glass-border);border-radius:6px;color:var(--text-100);font-family:'Inter',sans-serif;font-size:12px;font-weight:400;padding:8px 10px;width:100%;min-height:36px;max-height:80px;resize:vertical;transition:border-color .2s;line-height:1.4}
+.note-inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.note-inp::placeholder{color:var(--text-20)}
+.note-preview{font-size:10px;color:var(--text-40);font-style:italic;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* RPE / MIN badges */
 .rpe-tag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:2px 6px;border-radius:6px;border:1px solid}
@@ -224,7 +229,12 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 /* Grid helpers */
 .sport-cards-grid{display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
 @media(min-width:768px){.sport-cards-grid{grid-template-columns:repeat(4,1fr)}}
-.month-bars{display:flex;flex-direction:column;gap:12px}
+.month-bars{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:640px){.month-bars{grid-template-columns:1fr}}
+.month-bars .sport-stat{padding:12px 14px}
+.month-bars .sport-head{margin-bottom:8px}
+.month-bars .sport-head .sp-name{font-size:11px}
+.month-bars .sport-head .sp-pct{font-size:11px}
 
 /* Mobile touch */
 @media(max-width:640px){
@@ -379,7 +389,7 @@ const S={
   _d:null,
   load(){try{const r=localStorage.getItem(SK);this._d=r?JSON.parse(r):{}}catch(e){this._d={}}},
   save(){localStorage.setItem(SK,JSON.stringify(this._d))},
-  gw(wk){if(!this._d[wk])this._d[wk]={};for(let i=0;i<7;i++){if(!this._d[wk][i])this._d[wk][i]={};for(const sp of SPORTS)if(!this._d[wk][i][sp.key])this._d[wk][i][sp.key]={done:false,mins:'',rpe:''}}return this._d[wk]},
+  gw(wk){if(!this._d[wk])this._d[wk]={};for(let i=0;i<7;i++){if(!this._d[wk][i])this._d[wk][i]={};for(const sp of SPORTS)if(!this._d[wk][i][sp.key])this._d[wk][i][sp.key]={done:false,mins:'',rpe:'',note:''}}return this._d[wk]},
   set(wk,d,sp,f,v){this.gw(wk);this._d[wk][d][sp][f]=v;this.save()},
   del(wk){delete this._d[wk];this.save()},
   all(){return this._d}
@@ -415,13 +425,14 @@ const R={
       const c=document.createElement('div');c.className=`g-card day-card${isT?' is-today':''}`;c.id=`dc-${i}`;
       c.innerHTML=`<div class="day-head"><span class="d-name">${DAYS_IT[i]}</span>${isT?'<span class="today-pill">OGGI</span>':''}<span class="d-date">${dd.getDate()}/${dd.getMonth()+1}</span></div><div class="day-prog"><div class="day-prog-fill" style="width:${pct}%"></div></div>`+
         SPORTS.map(sp=>{const x=d[i][sp.key];const rc=x.rpe>=8?'rpe-hi':x.rpe>=5?'rpe-md':x.rpe>0?'rpe-lo':'';
-          return`<div class="s-row${x.done?' done':''}" data-s="${sp.key}" id="sr-${i}-${sp.key}">${sp.svg}<span class="s-name">${sp.label}</span><div class="chk-wrap">${x.done&&x.rpe?`<span class="rpe-tag ${rc}">${x.rpe}</span>`:''}${x.done&&x.mins?`<span class="min-tag">${x.mins}'</span>`:''}<input type="checkbox" class="s-chk ${sp.cls}" ${x.done?'checked':''} data-d="${i}" data-s="${sp.key}"/></div><div class="s-inputs${x.done?' vis':''}" id="si-${i}-${sp.key}"><div class="inp-wrap"><label>Min</label><input type="number" inputmode="numeric" min="1" max="600" class="data-inp" value="${x.mins||''}" placeholder="45" data-d="${i}" data-s="${sp.key}" data-f="mins"/></div><div class="inp-wrap"><label>RPE</label><input type="number" inputmode="numeric" min="1" max="10" class="data-inp" value="${x.rpe||''}" placeholder="7" data-d="${i}" data-s="${sp.key}" data-f="rpe"/></div></div></div>`}).join('');
+          return`<div class="s-row${x.done?' done':''}" data-s="${sp.key}" id="sr-${i}-${sp.key}">${sp.svg}<span class="s-name">${sp.label}</span><div class="chk-wrap">${x.done&&x.rpe?`<span class="rpe-tag ${rc}">${x.rpe}</span>`:''}${x.done&&x.mins?`<span class="min-tag">${x.mins}'</span>`:''}${x.done&&x.note?`<span class="note-preview" title="${x.note.replace(/"/g,'&quot;')}">${x.note}</span>`:''}<input type="checkbox" class="s-chk ${sp.cls}" ${x.done?'checked':''} data-d="${i}" data-s="${sp.key}"/></div><div class="s-inputs${x.done?' vis':''}" id="si-${i}-${sp.key}"><div class="inp-wrap"><label>Min</label><input type="number" inputmode="numeric" min="1" max="600" class="data-inp" value="${x.mins||''}" placeholder="45" data-d="${i}" data-s="${sp.key}" data-f="mins"/></div><div class="inp-wrap"><label>RPE</label><input type="number" inputmode="numeric" min="1" max="10" class="data-inp" value="${x.rpe||''}" placeholder="7" data-d="${i}" data-s="${sp.key}" data-f="rpe"/></div><div class="note-wrap"><label style="display:block;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-40);margin-bottom:2px">Dettagli allenamento</label><textarea class="note-inp" placeholder="es. 4x400m rec 1'30&quot; — 5x100 stile" data-d="${i}" data-s="${sp.key}">${x.note||''}</textarea></div></div></div>`}).join('');
       g.appendChild(c)}
     g.onclick=e=>{const ch=e.target.closest('.s-chk');if(ch)this.toggle(ch)};
-    g.onchange=e=>{const inp=e.target.closest('.data-inp');if(inp)this.input(inp)}},
+    g.onchange=e=>{const inp=e.target.closest('.data-inp');if(inp)this.input(inp)};
+    g.oninput=e=>{const ta=e.target.closest('.note-inp');if(ta){const i=+ta.dataset.d,sp=ta.dataset.s;S.set(Nav.cur,i,sp,'note',ta.value)}}},
 
   toggle(ch){const i=+ch.dataset.d,sp=ch.dataset.s,on=ch.checked;const wk=Nav.cur;
-    S.set(wk,i,sp,'done',on);if(!on){S.set(wk,i,sp,'mins','');S.set(wk,i,sp,'rpe','');}
+    S.set(wk,i,sp,'done',on);if(!on){S.set(wk,i,sp,'mins','');S.set(wk,i,sp,'rpe','');S.set(wk,i,sp,'note','');}
     this.week();this.stats();if(on)App.toast('Sessione registrata ✓')},
 
   input(inp){const i=+inp.dataset.d,sp=inp.dataset.s,f=inp.dataset.f;const v=parseInt(inp.value,10);
@@ -511,12 +522,14 @@ const IO={
           const sportStr=(r['Sport']||r['sport']||'').toLowerCase().trim();
           const mins=parseInt(r['Minuti']||r['minuti']||r['Minutes']||0);
           const rpe=parseInt(r['RPE']||r['rpe']||0);
+          const note=r['Note']||r['note']||r['Dettagli']||'';
           const dayIdx=DAYS_MAP[dayStr];
           const sportKey=SPORT_MAP[sportStr];
           if(wk!==undefined&&dayIdx!==undefined&&sportKey){
             S.set(wk,dayIdx,sportKey,'done',true);
             if(mins)S.set(wk,dayIdx,sportKey,'mins',mins);
             if(rpe>=1&&rpe<=10)S.set(wk,dayIdx,sportKey,'rpe',rpe);
+            if(note)S.set(wk,dayIdx,sportKey,'note',note);
             count++}}
         this.closeModal();App.render();
         App.toast(`${count} sessioni importate ✓`);
@@ -530,12 +543,12 @@ const IO={
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Allenamenti');
     XLSX.writeFile(wb,'trilog_template.xlsx')},
   exportData(){
-    const rows=[['Settimana','Giorno','Sport','Minuti','RPE']];
+    const rows=[['Settimana','Giorno','Sport','Minuti','RPE','Note']];
     const all=S.all();
     for(const wk in all)for(let i=0;i<7;i++)for(const sp of SPORTS){const x=all[wk]?.[i]?.[sp.key];
-      if(x&&x.done)rows.push([wk,DAYS_IT[i],sp.label,x.mins||'',x.rpe||''])}
+      if(x&&x.done)rows.push([wk,DAYS_IT[i],sp.label,x.mins||'',x.rpe||'',x.note||''])}
     if(rows.length===1){App.toast('Nessun dato da esportare');return}
-    const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:12},{wch:10},{wch:8},{wch:6}];
+    const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:12},{wch:10},{wch:8},{wch:6},{wch:30}];
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Allenamenti');
     XLSX.writeFile(wb,'trilog_export.xlsx');App.toast('Export completato ✓')}
 };
