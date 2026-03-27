@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="theme-color" content="#08080f"/>
-<title>TRIÂ·LOG â€” Training Dashboard</title>
+<title>TRI·LOG — Training Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
@@ -31,7 +31,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--text-20);border-radius:3px}
 .f-display{font-family:'Inter',sans-serif;font-weight:800}.f-mono{font-family:'JetBrains Mono',monospace}.f-orb{font-family:'Orbitron',monospace}
 
-/* â”€â”€â”€ HEADER â”€â”€â”€ */
+/* ─── HEADER ─── */
 .header{position:sticky;top:0;z-index:100;background:rgba(8,8,15,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px 16px}
 @supports(padding:max(0px)){.header{padding-top:max(12px,env(safe-area-inset-top))}}
 .header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
@@ -42,7 +42,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .week-sel{flex:1;max-width:260px;position:relative;min-width:0}
 .week-sel select{width:100%;appearance:none;-webkit-appearance:none;background:var(--bg-3);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--text-100);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;padding:9px 28px 9px 12px;cursor:pointer;transition:all .2s;text-overflow:ellipsis}
 .week-sel select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-.week-sel::after{content:'â–¾';position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text-40);font-size:10px;pointer-events:none}
+.week-sel::after{content:'▾';position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text-40);font-size:10px;pointer-events:none}
 .week-sel select option{background:var(--bg-3);color:var(--text-100)}
 .h-actions{display:flex;gap:5px;flex-shrink:0}
 .h-btn{background:var(--bg-3);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--text-60);font-size:14px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
@@ -55,7 +55,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .desk-nav button.active{color:var(--text-100);background:var(--accent-glow)}
 .desk-nav button.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent);border-radius:1px}
 
-/* â”€â”€â”€ BOTTOM NAV â”€â”€â”€ */
+/* ─── BOTTOM NAV ─── */
 .bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(8,8,15,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--glass-border);display:flex;justify-content:space-around;padding:6px 0}
 @supports(padding:max(0px)){.bot-nav{padding-bottom:max(6px,env(safe-area-inset-bottom))}}
 @media(min-width:768px){.bot-nav{display:none}}
@@ -64,24 +64,24 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .bot-nav button.active{color:var(--accent)}
 .bot-nav button.active svg{stroke:var(--accent)}
 
-/* â”€â”€â”€ MAIN â”€â”€â”€ */
+/* ─── MAIN ─── */
 .main{max-width:1200px;margin:0 auto;padding:20px 16px 40px}
 .sec-head{margin-bottom:20px}
 .sec-label{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
 .sec-title{font-family:'Inter',sans-serif;font-size:22px;font-weight:800;color:var(--text-100);line-height:1.2}
 .sec-sub{font-size:13px;color:var(--text-60);margin-top:4px}
 
-/* â”€â”€â”€ GLASS CARD â”€â”€â”€ */
+/* ─── GLASS CARD ─── */
 .g-card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:var(--radius-md);overflow:hidden;transition:border-color .25s,box-shadow .25s}
 .g-card:hover{border-color:rgba(255,255,255,.1)}
 
-/* â”€â”€â”€ WEEK GRID â”€â”€â”€ */
+/* ─── WEEK GRID ─── */
 .week-grid{display:grid;grid-template-columns:1fr;gap:12px}
 @media(min-width:600px){.week-grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1024px){.week-grid{grid-template-columns:repeat(4,1fr)}}
 @media(min-width:1280px){.week-grid{grid-template-columns:repeat(7,1fr)}}
 
-/* â”€â”€â”€ DAY CARD â”€â”€â”€ */
+/* ─── DAY CARD ─── */
 .day-card.is-today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-glow),0 4px 30px rgba(99,102,241,.1)}
 .day-card.is-today .day-head{background:var(--accent-glow)}
 .day-head{padding:11px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--glass-border)}
@@ -91,7 +91,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .day-prog{height:2px;background:var(--bg-2)}
 .day-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--swim));transition:width .4s ease;border-radius:1px}
 
-/* â”€â”€â”€ SPORT ROWS â”€â”€â”€ */
+/* ─── SPORT ROWS ─── */
 .s-row{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.03);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;transition:background .15s;position:relative}
 .s-row:last-child{border-bottom:none}
 .s-row::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:0 2px 2px 0;opacity:0;transition:opacity .2s,background .2s}
@@ -114,7 +114,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .chk-wrap{display:flex;align-items:center;gap:5px;flex-shrink:0}
 .s-chk{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:1.5px solid var(--text-20);border-radius:6px;background:transparent;cursor:pointer;transition:all .2s;position:relative;flex-shrink:0}
 .s-chk:checked{border-color:currentColor;background:currentColor}
-.s-chk:checked::after{content:'âœ“';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:700;color:var(--bg-0)}
+.s-chk:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:700;color:var(--bg-0)}
 .s-row.planned .s-chk{border-color:var(--plan);box-shadow:0 0 0 1px rgba(167,139,250,.15)}
 .s-chk.c-swim{color:var(--swim)}.s-chk.c-bike{color:var(--bike)}.s-chk.c-run{color:var(--run)}.s-chk.c-gym{color:var(--gym)}
 .rpe-tag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:2px 6px;border-radius:6px;border:1px solid}
@@ -134,7 +134,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .note-inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .note-inp::placeholder{color:var(--text-20)}
 
-/* â”€â”€â”€ STATS â”€â”€â”€ */
+/* ─── STATS ─── */
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 @media(min-width:640px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
 .stat-card{padding:18px}
@@ -163,7 +163,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .leg-name{font-size:14px;color:var(--text-60);font-weight:500}
 .leg-val{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500}
 
-/* â”€â”€â”€ MONTH â”€â”€â”€ */
+/* ─── MONTH ─── */
 .rpe-chart{display:flex;align-items:flex-end;gap:4px;height:80px;padding-top:8px}
 .rpe-col{flex:1;min-width:20px;border-radius:4px 4px 0 0;transition:height .4s ease;display:flex;align-items:flex-start;justify-content:center;padding-top:4px}
 .rpe-col span{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:var(--text-100)}
@@ -172,7 +172,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .month-bars{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 @media(max-width:640px){.month-bars{grid-template-columns:1fr}}
 
-/* â”€â”€â”€ IMPORT MODAL â”€â”€â”€ */
+/* ─── IMPORT MODAL ─── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
 .modal{background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-lg);max-width:520px;width:100%;padding:28px;position:relative;max-height:90vh;overflow-y:auto}
@@ -205,12 +205,12 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 .import-result.err{background:var(--run-deep);border:1px solid rgba(255,55,95,.2);color:var(--run)}
 .import-result.show{display:block}
 
-/* â”€â”€â”€ VIEWS â”€â”€â”€ */
+/* ─── VIEWS ─── */
 .view{display:none}.view.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeUp .3s ease forwards}
 
-/* â”€â”€â”€ TOAST â”€â”€â”€ */
+/* ─── TOAST ─── */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(30px);background:var(--bg-3);border:1px solid var(--accent);border-radius:var(--radius-md);padding:10px 20px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--text-100);box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:200;opacity:0;transition:all .3s ease;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(min-width:768px){.toast{bottom:30px}}
@@ -230,7 +230,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
   <div class="header-inner">
     <div class="logo">
       <div class="logo-mark"><span class="f-orb" style="font-size:9px;font-weight:900;color:var(--accent)">TRI</span></div>
-      <span class="logo-text">TRIÂ·LOG</span>
+      <span class="logo-text">TRI·LOG</span>
     </div>
     <div class="week-sel"><select id="weekSel"></select></div>
     <nav class="desk-nav">
@@ -239,9 +239,9 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
       <button data-v="month">Mese</button>
     </nav>
     <div class="h-actions">
-      <button class="h-btn" id="btnImport" title="Importa piano Excel">ðŸ“¥</button>
-      <button class="h-btn" id="btnExport" title="Esporta dati Excel">ðŸ“¤</button>
-      <button class="h-btn" id="btnReset" title="Reset settimana">â†º</button>
+      <button class="h-btn" id="btnImport" title="Importa piano Excel">📥</button>
+      <button class="h-btn" id="btnExport" title="Esporta dati Excel">📤</button>
+      <button class="h-btn" id="btnReset" title="Reset settimana">↺</button>
     </div>
   </div>
 </header>
@@ -261,7 +261,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
     <div class="sec-head">
       <div class="sec-label">Piano Settimanale</div>
       <div class="sec-title">Il tuo allenamento.</div>
-      <div class="sec-sub" id="planHint">Importa un piano Excel (ðŸ“¥) o segna le sessioni manualmente.</div>
+      <div class="sec-sub" id="planHint">Importa un piano Excel (📥) o segna le sessioni manualmente.</div>
     </div>
     <div class="week-grid" id="weekGrid"></div>
   </div>
@@ -279,7 +279,7 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
   <div id="v-month" class="view fade-in">
     <div class="sec-head">
       <div class="sec-label" id="mLabel">Dashboard Mensile</div>
-      <div class="sec-title" id="mTitle">â€”</div>
+      <div class="sec-title" id="mTitle">—</div>
     </div>
     <div class="stat-grid" id="mStatCards" style="margin-bottom:24px"></div>
     <div class="sec-head" style="margin-top:8px"><div class="sec-label">Volume per Sport</div></div>
@@ -293,49 +293,49 @@ body{background:var(--bg-0);color:var(--text-100);font-family:'Inter',system-ui,
 </main>
 <div class="modal-overlay" id="importModal">
   <div class="modal">
-    <button class="modal-close" id="modalClose">âœ•</button>
-    <h2 style="margin-bottom:4px">ðŸ“¥ Importa Piano</h2>
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2 style="margin-bottom:4px">📥 Importa Piano</h2>
     <p style="font-size:13px;color:var(--text-60);margin-bottom:18px">Carica il file Excel con il tuo piano di allenamento.</p>
     <div class="format-guide">
       <h3>Formato colonne richiesto</h3>
       <table class="col-table">
         <thead><tr><th>Colonna</th><th>Valore esempio</th><th></th></tr></thead>
         <tbody>
-          <tr><td>Settimana</td><td>2026-W14</td><td><span class="req">â— obbl.</span></td></tr>
-          <tr><td>Giorno</td><td>Lun / LunedÃ¬ / Monday</td><td><span class="req">â— obbl.</span></td></tr>
-          <tr><td>Sport</td><td>Nuoto / Bici / Corsa / Forza</td><td><span class="req">â— obbl.</span></td></tr>
-          <tr><td>Descrizione</td><td>4Ã—400m rec 1'30'' â€” fondo Z2</td><td><span class="opt">â—‹ opzion.</span></td></tr>
-          <tr><td>Minuti</td><td>60</td><td><span class="opt">â—‹ opzion.</span></td></tr>
-          <tr><td>RPE</td><td>7</td><td><span class="opt">â—‹ opzion.</span></td></tr>
+          <tr><td>Settimana</td><td>2026-W14</td><td><span class="req">● obbl.</span></td></tr>
+          <tr><td>Giorno</td><td>Lun / Lunedì / Monday</td><td><span class="req">● obbl.</span></td></tr>
+          <tr><td>Sport</td><td>Nuoto / Bici / Corsa / Forza</td><td><span class="req">● obbl.</span></td></tr>
+          <tr><td>Descrizione</td><td>4×400m rec 1'30'' — fondo Z2</td><td><span class="opt">○ opzion.</span></td></tr>
+          <tr><td>Minuti</td><td>60</td><td><span class="opt">○ opzion.</span></td></tr>
+          <tr><td>RPE</td><td>7</td><td><span class="opt">○ opzion.</span></td></tr>
         </tbody>
       </table>
       <div class="values-hint">
         <strong>Giorni accettati:</strong> Lun, Mar, Mer, Gio, Ven, Sab, Dom (o nome completo)<br/>
         <strong>Sport accettati:</strong> Nuoto, Bici, Corsa, Forza (anche in inglese: swim, bike, run, gym)<br/>
-        <strong>Settimana:</strong> formato <code style="color:var(--accent)">YYYY-W##</code> â€” scarica il template per vedere il formato corretto
+        <strong>Settimana:</strong> formato <code style="color:var(--accent)">YYYY-W##</code> — scarica il template per vedere il formato corretto
       </div>
     </div>
     <div class="drop-zone" id="dropZone">
-      <div class="dz-icon">ðŸ“</div>
+      <div class="dz-icon">📁</div>
       <div class="dz-text">Trascina qui il file o tocca per selezionare</div>
-      <div class="dz-hint">.xlsx oppure .csv Â· max 5 MB</div>
+      <div class="dz-hint">.xlsx oppure .csv · max 5 MB</div>
       <input type="file" id="fileInput" accept=".xlsx,.xls,.csv"/>
     </div>
     <div class="import-result" id="importResult"></div>
     <div class="modal-btns">
-      <button class="btn btn-primary" id="dlTemplate">ðŸ“‹ Scarica Template</button>
+      <button class="btn btn-primary" id="dlTemplate">📋 Scarica Template</button>
       <button class="btn btn-outline" id="modalClose2">Chiudi</button>
     </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
-// TRIÂ·LOG v5 â€” Piano da Excel funzionante
+// TRI·LOG v5 — Piano da Excel funzionante
 const DAYS_IT=['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
 const MONTHS_IT=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 const DAYS_MAP={'lun':0,'mar':1,'mer':2,'gio':3,'ven':4,'sab':5,'dom':6,
   'lunedi':0,'martedi':1,'mercoledi':2,'giovedi':3,'venerdi':4,'sabato':5,'domenica':6,
-  'lunedÃ¬':0,'martedÃ¬':1,'mercoledÃ¬':2,'giovedÃ¬':3,'venerdÃ¬':4,
+  'lunedì':0,'martedì':1,'mercoledì':2,'giovedì':3,'venerdì':4,
   'monday':0,'tuesday':1,'wednesday':2,'thursday':3,'friday':4,'saturday':5,'sunday':6,
   'mon':0,'tue':1,'wed':2,'thu':3,'fri':4,'sat':5,'sun':6};
 const SPORT_MAP={'nuoto':'swim','swim':'swim','swimming':'swim',
@@ -361,7 +361,7 @@ const D={
   sun(m){const s=new Date(m);s.setDate(s.getDate()+6);return s},
   fmt(d){return`${d.getDate()}/${d.getMonth()+1}`},
   allWeeks(){const w=[];let c=new Date(this.mon(new Date()));c.setDate(c.getDate()-28);const e=this.mon(END);
-    while(c<=e){const m=new Date(c);w.push({key:this.wk(m),mon:m,sun:this.sun(m),lbl:`W${String(this.wn(m)).padStart(2,'0')} Â· ${this.fmt(m)} â€“ ${this.fmt(this.sun(m))} ${m.getFullYear()}`});c.setDate(c.getDate()+7)}return w},
+    while(c<=e){const m=new Date(c);w.push({key:this.wk(m),mon:m,sun:this.sun(m),lbl:`W${String(this.wn(m)).padStart(2,'0')} · ${this.fmt(m)} – ${this.fmt(this.sun(m))} ${m.getFullYear()}`});c.setDate(c.getDate()+7)}return w},
   monthWeeks(y,m){return this.allWeeks().filter(w=>(w.mon.getFullYear()===y&&w.mon.getMonth()===m)||(w.sun.getFullYear()===y&&w.sun.getMonth()===m))},
   td(){const t=new Date();t.setHours(0,0,0,0);return t}
 };
@@ -403,7 +403,7 @@ const R={
       const sHTML=SPORTS.map(sp=>{const x=d[i][sp.key];if(x.planned)hasPlan=true;
         const isDone=x.done,isPlan=x.planned&&!isDone;const rowCls=isDone?' done':isPlan?' planned':'';
         const rc=x.rpe>=8?'rpe-hi':x.rpe>=5?'rpe-md':x.rpe>0?'rpe-lo':'';
-        let tags='';if(isPlan)tags+='<span class="plan-tag">â—· PIANO</span>';
+        let tags='';if(isPlan)tags+='<span class="plan-tag">◷ PIANO</span>';
         if(isDone&&x.rpe)tags+=`<span class="rpe-tag ${rc}">${x.rpe}</span>`;
         if(isDone&&x.mins)tags+=`<span class="min-tag">${x.mins}'</span>`;
         const descRow=(x.planDesc&&!isDone)?`<div class="plan-desc">${x.planDesc.replace(/</g,'&lt;')}</div>`:'';
@@ -411,33 +411,33 @@ const R={
       card.innerHTML=`<div class="day-head"><span class="d-name">${DAYS_IT[i]}</span>${isT?'<span class="today-pill">OGGI</span>':''}<span class="d-date">${dd.getDate()}/${dd.getMonth()+1}</span></div><div class="day-prog"><div class="day-prog-fill" style="width:${pct}%"></div></div>${sHTML}`;
       g.appendChild(card)}
     const hint=document.getElementById('planHint');
-    if(hint)hint.textContent=hasPlan?'Segna le sessioni completate e inserisci durata e RPE.':'Importa un piano Excel (ðŸ“¥) o segna le sessioni manualmente.';
+    if(hint)hint.textContent=hasPlan?'Segna le sessioni completate e inserisci durata e RPE.':'Importa un piano Excel (📥) o segna le sessioni manualmente.';
     g.onclick=e=>{const ch=e.target.closest('.s-chk');if(ch)this.toggle(ch)};
     g.onchange=e=>{const inp=e.target.closest('.data-inp');if(inp)this.input(inp)};
     g.oninput=e=>{const ta=e.target.closest('.note-inp');if(ta)S.set(Nav.cur,+ta.dataset.d,ta.dataset.s,'note',ta.value)}},
   toggle(ch){const i=+ch.dataset.d,sp=ch.dataset.s,on=ch.checked;const wk=Nav.cur;
     S.set(wk,i,sp,'done',on);if(!on){S.set(wk,i,sp,'mins','');S.set(wk,i,sp,'rpe','');S.set(wk,i,sp,'note','');}
-    this.week();this.stats();if(on)App.toast('Sessione registrata âœ“')},
+    this.week();this.stats();if(on)App.toast('Sessione registrata ✓')},
   input(inp){const i=+inp.dataset.d,sp=inp.dataset.s,f=inp.dataset.f;const v=parseInt(inp.value,10);
-    if(f==='rpe'&&inp.value&&(v<1||v>10)){App.toast('RPE: valore 1â€“10');inp.value='';return}
+    if(f==='rpe'&&inp.value&&(v<1||v>10)){App.toast('RPE: valore 1–10');inp.value='';return}
     S.set(Nav.cur,i,sp,f,inp.value?v:'');this.week();this.stats()},
   initStatCards(){
     document.getElementById('statCards').innerHTML=
       `<div class="g-card stat-card"><div class="sv" id="sHrs" style="color:var(--accent)">0h 0m</div><div class="sl">Volume Totale</div></div>`+
       `<div class="g-card stat-card"><div class="sv f-mono" id="sSess" style="font-size:24px">0</div><div class="sl">Sessioni</div></div>`+
-      `<div class="g-card stat-card"><div class="sv f-mono" id="sRPE" style="font-size:24px">â€”</div><div class="sl">RPE Medio</div></div>`+
+      `<div class="g-card stat-card"><div class="sv f-mono" id="sRPE" style="font-size:24px">—</div><div class="sl">RPE Medio</div></div>`+
       `<div class="g-card stat-card"><div class="sv f-mono" id="sPct" style="font-size:24px">0%</div><div class="sl">Completamento</div></div>`;
     document.getElementById('sportCards').innerHTML=SPORTS.map(sp=>
       `<div class="g-card sport-stat t-${sp.key}"><div class="sport-head">${sp.svg}<span class="sp-name" style="color:${sp.cssVar}">${sp.label.toUpperCase()}</span><span class="sp-pct" style="color:${sp.cssVar}" id="p-${sp.key}">0%</span></div><div class="bar-track"><div class="bar-fill" id="b-${sp.key}" style="background:${sp.cssVar};width:0%"></div></div><div class="sport-meta"><span id="t-${sp.key}">0 min</span><span id="s-${sp.key}">0 sess.</span></div></div>`).join('');
     document.getElementById('donutWrap').innerHTML=
       `<svg width="160" height="160" viewBox="0 0 160 160" style="flex-shrink:0"><circle cx="80" cy="80" r="60" fill="none" stroke="var(--bg-2)" stroke-width="26"/>`+
       SPORTS.map(sp=>`<circle id="dn-${sp.key}" cx="80" cy="80" r="60" fill="none" stroke="${sp.hex}" stroke-width="26" stroke-dasharray="0 377" stroke-dashoffset="94" style="transition:stroke-dasharray .8s ease;transform-origin:center;transform:rotate(-90deg)"/>`).join('')+
-      `<text x="80" y="76" text-anchor="middle" fill="var(--text-100)" font-family="Orbitron" font-size="18" font-weight="900" id="dnC">â€”</text><text x="80" y="92" text-anchor="middle" fill="var(--text-40)" font-family="Orbitron" font-size="7" letter-spacing="2">MIN</text></svg>`+
+      `<text x="80" y="76" text-anchor="middle" fill="var(--text-100)" font-family="Orbitron" font-size="18" font-weight="900" id="dnC">—</text><text x="80" y="92" text-anchor="middle" fill="var(--text-40)" font-family="Orbitron" font-size="7" letter-spacing="2">MIN</text></svg>`+
       `<div class="donut-legend">`+SPORTS.map(sp=>`<div class="leg-row"><span class="leg-dot" style="background:${sp.cssVar}"></span><span class="leg-name">${sp.label}</span><span class="leg-val" style="color:${sp.cssVar}" id="lg-${sp.key}">0 min / 0%</span></div>`).join('')+`</div>`},
   stats(){const s=St.weekly(Nav.cur);const h=Math.floor(s.tm/60),m=s.tm%60;
     document.getElementById('sHrs').textContent=`${h}h ${m}m`;
     document.getElementById('sSess').textContent=s.ts;
-    document.getElementById('sRPE').textContent=s.ra||'â€”';
+    document.getElementById('sRPE').textContent=s.ra||'—';
     document.getElementById('sPct').textContent=(s.tp>0?Math.round((s.ts/s.tp)*100):Math.round((s.ts/28)*100))+'%';
     for(const sp of SPORTS){const k=sp.key,p=s.tm>0?Math.round((s.t[k]/s.tm)*100):0;
       const q=n=>document.getElementById(n);
@@ -447,7 +447,7 @@ const R={
     const C=2*Math.PI*60;let off=0;
     for(const sp of SPORTS){const arc=s.tm>0?(s.t[sp.key]/s.tm)*C:0;const el=document.getElementById(`dn-${sp.key}`);
       if(el){el.style.strokeDasharray=`${arc} ${C-arc}`;el.setAttribute('stroke-dashoffset',C*0.25-off);off+=arc}}
-    document.getElementById('dnC').textContent=s.tm||'â€”'},
+    document.getElementById('dnC').textContent=s.tm||'—'},
   month(){const{y,m}=Nav.getMonth();
     document.getElementById('mLabel').textContent='Dashboard Mensile';
     document.getElementById('mTitle').textContent=`${MONTHS_IT[m]} ${y}`;
@@ -455,7 +455,7 @@ const R={
     document.getElementById('mStatCards').innerHTML=
       `<div class="g-card stat-card"><div class="sv" style="color:var(--accent)">${h}h ${mn}m</div><div class="sl">Volume</div></div>`+
       `<div class="g-card stat-card"><div class="sv f-mono" style="font-size:24px">${ms.ts}</div><div class="sl">Sessioni</div></div>`+
-      `<div class="g-card stat-card"><div class="sv f-mono" style="font-size:24px">${ms.ra||'â€”'}</div><div class="sl">RPE Medio</div></div>`+
+      `<div class="g-card stat-card"><div class="sv f-mono" style="font-size:24px">${ms.ra||'—'}</div><div class="sl">RPE Medio</div></div>`+
       `<div class="g-card stat-card"><div class="sv f-mono" style="font-size:24px">${ms.wc}</div><div class="sl">Settimane</div></div>`;
     const mx=Math.max(1,...SPORTS.map(sp=>ms.t[sp.key]));
     document.getElementById('mSportBars').innerHTML=SPORTS.map(sp=>{const mins=ms.t[sp.key],p=Math.round((mins/mx)*100);
@@ -508,23 +508,23 @@ const IO={
       this.closeModal();App.render();
       if(count>0&&rows.length>0){const fwk=String(rows[0]['Settimana']||rows[0]['Week']||'').trim();
         if(fwk&&fwk!==Nav.cur){const sel=document.getElementById('weekSel');const opt=sel.querySelector(`option[value="${fwk}"]`);if(opt){sel.value=fwk;Nav.cur=fwk;App.render()}}}
-      App.toast(skipped>0?`âœ“ ${count} sessioni importate Â· âš  ${skipped} righe saltate`:`âœ“ ${count} sessioni importate`);
-    }catch(err){this.showResult('âŒ Errore nel file: '+err.message,false)}};reader.readAsArrayBuffer(file)},
+      App.toast(skipped>0?`✓ ${count} sessioni importate · ⚠ ${skipped} righe saltate`:`✓ ${count} sessioni importate`);
+    }catch(err){this.showResult('❌ Errore nel file: '+err.message,false)}};reader.readAsArrayBuffer(file)},
   downloadTemplate(){if(!window.XLSX){App.toast('Libreria XLSX non caricata');return}
     const weeks=D.allWeeks().filter(w=>w.key>=D.today()).slice(0,4);const header=['Settimana','Giorno','Sport','Descrizione','Minuti','RPE'];
     const rows=[header];
     for(const wk of weeks)for(const day of DAYS_IT)rows.push([wk.key,day,'','','','']);
     const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:12},{wch:10},{wch:50},{wch:8},{wch:6}];
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Piano Allenamenti');
-    const iRows=[['TRIÂ·LOG â€” Istruzioni Template'],[''],['COLONNE OBBLIGATORIE:'],['Settimana','Formato: YYYY-W## (es. 2026-W14)'],['Giorno','Lun, Mar, Mer, Gio, Ven, Sab, Dom'],['Sport','Nuoto, Bici, Corsa, Forza'],[''],['COLONNE OPZIONALI:'],['Descrizione','Dettaglio allenamento'],['Minuti','Durata prevista (es. 60)'],['RPE','IntensitÃ  1-10 (es. 7)']];
+    const iRows=[['TRI·LOG — Istruzioni Template'],[''],['COLONNE OBBLIGATORIE:'],['Settimana','Formato: YYYY-W## (es. 2026-W14)'],['Giorno','Lun, Mar, Mer, Gio, Ven, Sab, Dom'],['Sport','Nuoto, Bici, Corsa, Forza'],[''],['COLONNE OPZIONALI:'],['Descrizione','Dettaglio allenamento'],['Minuti','Durata prevista (es. 60)'],['RPE','Intensità 1-10 (es. 7)']];
     const wsI=XLSX.utils.aoa_to_sheet(iRows);wsI['!cols']=[{wch:20},{wch:55}];XLSX.utils.book_append_sheet(wb,wsI,'Istruzioni');
-    XLSX.writeFile(wb,'trilog_piano_template.xlsx');App.toast('Template scaricato âœ“')},
+    XLSX.writeFile(wb,'trilog_piano_template.xlsx');App.toast('Template scaricato ✓')},
   exportData(){if(!window.XLSX){App.toast('Libreria XLSX non caricata');return}
     const rows=[['Settimana','Giorno','Sport','Descrizione piano','Minuti effettivi','RPE effettivo','Note']];const all=S.all();
     for(const wk in all)for(let i=0;i<7;i++)for(const sp of SPORTS){const x=all[wk]?.[i]?.[sp.key];if(x&&(x.planned||x.done))rows.push([wk,DAYS_IT[i],sp.label,x.planDesc||'',x.mins||'',x.rpe||'',x.note||''])}
     if(rows.length===1){App.toast('Nessun dato da esportare');return}
     const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:6},{wch:8},{wch:40},{wch:12},{wch:10},{wch:30}];
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Allenamenti');XLSX.writeFile(wb,'trilog_export.xlsx');App.toast('Export completato âœ“')}
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Allenamenti');XLSX.writeFile(wb,'trilog_export.xlsx');App.toast('Export completato ✓')}
 };
 
 const App={_tt:null,
@@ -537,7 +537,7 @@ const App={_tt:null,
       document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
       const el=document.getElementById(`v-${v}`);el.classList.remove('fade-in');void el.offsetWidth;el.classList.add('active','fade-in');
       if(v==='stats')R.stats();if(v==='month')R.month()}})},
-  reset(){if(!confirm('Reset sessioni completate di questa settimana?\n(Il piano importato rimarrÃ  visibile)'))return;
+  reset(){if(!confirm('Reset sessioni completate di questa settimana?\n(Il piano importato rimarrà visibile)'))return;
     const wk=Nav.cur;const d=S.gw(wk);
     for(let i=0;i<7;i++)for(const sp of SPORTS){S.set(wk,i,sp.key,'done',false);S.set(wk,i,sp.key,'mins','');S.set(wk,i,sp.key,'rpe','');S.set(wk,i,sp.key,'note','');}
     this.render();this.toast('Completamenti resettati (piano mantenuto)')},
