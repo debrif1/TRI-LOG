@@ -537,10 +537,12 @@ const App={_tt:null,
       document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
       const el=document.getElementById(`v-${v}`);el.classList.remove('fade-in');void el.offsetWidth;el.classList.add('active','fade-in');
       if(v==='stats')R.stats();if(v==='month')R.month()}})},
-  reset(){if(!confirm('Reset sessioni completate di questa settimana?\n(Il piano importato rimarrà visibile)'))return;
-    const wk=Nav.cur;const d=S.gw(wk);
-    for(let i=0;i<7;i++)for(const sp of SPORTS){S.set(wk,i,sp.key,'done',false);S.set(wk,i,sp.key,'mins','');S.set(wk,i,sp.key,'rpe','');S.set(wk,i,sp.key,'note','');}
-    this.render();this.toast('Completamenti resettati (piano mantenuto)')},
+
+  // ── UNICA MODIFICA: reset cancella anche planned e planDesc ──
+  reset(){if(!confirm('Reset completo della settimana?\nVerranno eliminati piano e sessioni completate.'))return;
+    S.delWeek(Nav.cur);
+    this.render();this.toast('Settimana resettata completamente')},
+
   toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(this._tt);this._tt=setTimeout(()=>t.classList.remove('show'),2800)}
 };
 App.init();
